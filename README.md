@@ -1,53 +1,93 @@
-# Helix Collective Dashboard
+# helix-collective-dashboard
 
-Real-time monitoring dashboard for the entire Helix Collective ecosystem.
+Dashboard for Helix Collective
 
-## Features
+## 🎯 Overview
 
-- 📊 Real-time repository metrics
-- 🔄 Auto-refresh every 30 seconds
-- 🎨 Beautiful dark theme UI
-- 📱 Fully responsive design
-- 🚀 GitHub API integration
-- ⚡ Fast and lightweight
+This repository is part of the [Helix Collective](https://github.com/Deathcharge/helix-platform), a comprehensive ecosystem for building intelligent, multi-agent systems with consciousness frameworks and advanced LLM integration.
 
-## Tech Stack
+## 🚀 Quick Start
 
-- **Frontend**: React 19 + Vite + TailwindCSS
-- **Backend**: Express.js + Octokit (GitHub API)
-- **Visualizations**: Recharts
+### Installation
 
-## Installation
+\`\`\`bash
+git clone https://github.com/Deathcharge/helix-collective-dashboard.git
+cd helix-collective-dashboard
+pip install -r requirements.txt
+\`\`\`
 
-```bash
-npm install
-```
+### Basic Usage
 
-## Development
+See the [examples/](examples/) directory for working examples and integration patterns.
 
-```bash
-npm run dev
-```
+## 📚 Documentation
 
-This will start both the backend server (port 5000) and frontend dev server (port 5173).
+- **[Architecture](docs/ARCHITECTURE.md)** - System design and components
+- **[API Reference](docs/API.md)** - Complete API documentation
+- **[Integration Guide](docs/INTEGRATION.md)** - How to integrate with other Helix repos
+- **[Deployment](docs/DEPLOYMENT.md)** - Production deployment guide
+- **[Contributing](CONTRIBUTING.md)** - How to contribute
 
-## Production Build
+## 🔗 Related Repositories
 
-```bash
-npm run build
-npm start
-```
+- **[helix-platform](https://github.com/Deathcharge/helix-platform)** - Central hub and integration guide
+- **[helix-unified](https://github.com/Deathcharge/helix-unified)** - Main unified codebase
+- **[helix-core](https://github.com/Deathcharge/helix-core)** - Core utilities and LLM integration
 
-## Environment Variables
+See [HELIX_REPOSITORY_INDEX.md](https://github.com/Deathcharge/helix-platform/blob/main/HELIX_REPOSITORY_INDEX.md) for the complete ecosystem map.
 
-Set GITHUB_TOKEN for authenticated API access.
+## 🧪 Testing
 
-## API Endpoints
+Run tests with pytest:
 
-- `GET /api/repos` - List all repositories
-- `GET /api/repos/:repo/metrics` - Get specific repo metrics
-- `GET /api/health` - System health status
+\`\`\`bash
+pytest tests/ -v --cov=src
+\`\`\`
 
-## License
+## 🔄 CI/CD
 
-Dual licensed under Apache 2.0 and Proprietary License.
+This repository uses GitHub Actions for:
+- ✅ Automated testing (Python 3.9, 3.10, 3.11)
+- ✅ Code linting (flake8)
+- ✅ Type checking (mypy)
+- ✅ Security scanning (bandit, safety)
+- ✅ Coverage reporting (Codecov)
+
+See [.github/workflows/ci.yml](.github/workflows/ci.yml) for details.
+
+## 📋 Requirements
+
+- Python 3.9+
+- Dependencies listed in requirements.txt
+- Development dependencies in requirements-dev.txt
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development setup
+- Code style guide
+- Testing requirements
+- Pull request process
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Issues**: Report bugs or request features via [GitHub Issues](https://github.com/Deathcharge/helix-collective-dashboard/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/Deathcharge/helix-collective-dashboard/discussions)
+- **Documentation**: See the [docs/](docs/) directory
+- **Ecosystem**: Visit [helix-platform](https://github.com/Deathcharge/helix-platform)
+
+## 🎓 Learn More
+
+- [Helix Collective Repository Index](https://github.com/Deathcharge/helix-platform/blob/main/HELIX_REPOSITORY_INDEX.md)
+- [Architecture Guide](https://github.com/Deathcharge/helix-platform/blob/main/docs/ARCHITECTURE.md)
+- [Integration Examples](https://github.com/Deathcharge/helix-platform/tree/main/examples)
+
+---
+
+**Status**: ✅ Production Ready  
+**Last Updated**: June 19, 2026  
+**Maintainer**: Helix Collective Contributors
