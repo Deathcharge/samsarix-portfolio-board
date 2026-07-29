@@ -1,4 +1,6 @@
-# Helix Monorepo Dashboard - Specification
+# Legacy Helix Monorepo Dashboard - Specification
+
+> **Historical concept document.** This file preserves the original Helix-era dashboard idea and branding; it is not the implemented product or release plan. The release product is Samsarix Portfolio Board, the smaller read-only GitHub activity board documented in `README.md` and `docs/PRODUCTIZATION.md`. Unchecked items below are not advertised features.
 
 ## 🎯 Overview
 
@@ -184,4 +186,3 @@ WS   /ws/metrics             - Real-time metrics
 - 99.9% uptime
 - Support for 100+ concurrent users
 - Mobile responsive
-

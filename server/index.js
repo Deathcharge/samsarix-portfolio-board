@@ -1,112 +1,76 @@
-import express from 'express';
-import cors from 'cors';
-import { Octokit } from 'octokit';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { loadEnvFile } from 'node:process'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { createApp } from './app.js'
+import { loadConfig } from './config.js'
+import { createDashboardService } from './dashboard-service.js'
+import { createGitHubClient } from './github-client.js'
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-app.use(cors());
-app.use(express.json());
-
-// GitHub API client
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN || 'public'
-});
-
-// Repository list
-const REPOS = [
-  'agent-consensus',
-  'helix-chat-engine',
-  'helix-integration',
-  'helix-notifications',
-  'helix-token-cost-manager',
-  'neural-mesh',
-  'policy-engine',
-  'routine-engine',
-  'unified-llm',
-  'helix-discord-bot',
-  'helix-agent-orchestration',
-  'helix-sdk',
-  'Helix-Collective-Web'
-];
-
-// API Routes
-app.get('/api/repos', async (req, res) => {
+function loadLocalEnvironment() {
   try {
-    const repos = await Promise.all(
-      REPOS.map(async (repo) => {
-        try {
-          const { data } = await octokit.rest.repos.get({
-            owner: 'Deathcharge',
-            repo: repo
-          });
-          return {
-            name: data.name,
-            description: data.description,
-            url: data.html_url,
-            stars: data.stargazers_count,
-            forks: data.forks_count,
-            language: data.language,
-            updated_at: data.updated_at,
-            status: 'healthy'
-          };
-        } catch (e) {
-          return {
-            name: repo,
-            status: 'error',
-            error: e.message
-          };
-        }
-      })
-    );
-    res.json(repos);
+    loadEnvFile()
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error.code !== 'ENOENT') {
+      throw error
+    }
   }
-});
+}
 
-app.get('/api/repos/:repo/metrics', async (req, res) => {
+export function startServer({ env = process.env, logger = console } = {}) {
+  const config = loadConfig(env)
+  const githubClient = createGitHubClient({
+    owner: config.githubOwner,
+    token: config.githubToken,
+    repositoryNames: config.githubRepositories,
+    timeoutMs: config.githubTimeoutMs,
+    activityWindowDays: config.activityWindowDays,
+  })
+  const dashboardService = createDashboardService({
+    githubClient,
+    cacheTtlMs: config.cacheTtlMs,
+    staleMaxAgeMs: config.staleMaxAgeMs,
+  })
+  const app = createApp({ config, dashboardService, logger })
+  const server = app.listen(config.port, config.host, () => {
+    logger.info?.(`Samsarix Portfolio Board listening on http://${config.host}:${config.port}`)
+  })
+
+  let stopping = false
+  const shutdown = (signal) => {
+    if (stopping) {
+      return
+    }
+
+    stopping = true
+    logger.info?.(`Received ${signal}; closing the dashboard server.`)
+    const forcedShutdown = setTimeout(() => {
+      logger.error?.('Graceful shutdown timed out; closing remaining connections.')
+      server.closeAllConnections?.()
+    }, 10000)
+    forcedShutdown.unref()
+
+    server.close((error) => {
+      clearTimeout(forcedShutdown)
+      if (error) {
+        logger.error?.('Dashboard shutdown failed.', { error: error.message })
+        process.exitCode = 1
+      }
+    })
+    server.closeIdleConnections?.()
+  }
+
+  process.once('SIGINT', () => shutdown('SIGINT'))
+  process.once('SIGTERM', () => shutdown('SIGTERM'))
+  return server
+}
+
+const isMainModule = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+if (isMainModule) {
   try {
-    const { repo } = req.params;
-    const { data } = await octokit.rest.repos.get({
-      owner: 'Deathcharge',
-      repo: repo
-    });
-    
-    res.json({
-      name: repo,
-      stars: data.stargazers_count,
-      forks: data.forks_count,
-      watchers: data.watchers_count,
-      open_issues: data.open_issues_count,
-      language: data.language,
-      created_at: data.created_at,
-      updated_at: data.updated_at
-    });
+    loadLocalEnvironment()
+    startServer()
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Unable to start Samsarix Portfolio Board: ${error.message}`)
+    process.exitCode = 1
   }
-});
-
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    repos_monitored: REPOS.length
-  });
-});
-
-// Serve static files
-app.use(express.static(join(__dirname, '../client/dist')));
-
-// Fallback to index.html for SPA
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, '../client/dist/index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Helix Dashboard running on http://localhost:${PORT}`);
-});
+}

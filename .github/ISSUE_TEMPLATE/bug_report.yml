@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a reproducible, non-sensitive problem.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Samsarix Portfolio Board. Do not include tokens, private repository names, or vulnerability details. Report security issues privately as described in SECURITY.md.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the observed behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Configure ...
+        2. Start ...
+        3. Open ...
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Version or commit
+      description: Include the release version or commit SHA when known.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Node version, operating system, and browser if relevant.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs
+      description: Remove tokens, private names, paths, and other sensitive values.
+      render: shell
