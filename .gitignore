@@ -1,4 +1,10 @@
 node_modules/
 dist/
+client/dist/
+.env
+.env.local
+coverage/
+.playwright-cli/
+output/
 .DS_Store
 *.log
