@@ -373,8 +373,8 @@ export default function App() {
         <nav className="page-footer__links" aria-label="Project links">
           <a href="mailto:contact@samsarix.com">Contact</a>
           <a href="mailto:support@samsarix.com">Support</a>
-          <a href="https://github.com/Deathcharge/helix-collective-dashboard/blob/main/LICENSE" target="_blank" rel="noreferrer">
-            License <span aria-hidden="true">↗</span>
+          <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noreferrer">
+            Apache-2.0 <span aria-hidden="true">↗</span>
           </a>
           <a href="https://github.com/Deathcharge/helix-collective-dashboard" target="_blank" rel="noreferrer">
             GitHub <span aria-hidden="true">↗</span>
