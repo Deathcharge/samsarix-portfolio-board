@@ -376,7 +376,7 @@ export default function App() {
           <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noreferrer">
             Apache-2.0 <span aria-hidden="true">↗</span>
           </a>
-          <a href="https://github.com/Deathcharge/helix-collective-dashboard" target="_blank" rel="noreferrer">
+          <a href="https://github.com/Deathcharge/samsarix-portfolio-board" target="_blank" rel="noreferrer">
             GitHub <span aria-hidden="true">↗</span>
           </a>
         </nav>

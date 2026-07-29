@@ -27,7 +27,7 @@ Prerequisites:
 - Network access from the server to `api.github.com`
 
 ```bash
-git clone https://github.com/Deathcharge/helix-collective-dashboard.git
+git clone https://github.com/Deathcharge/samsarix-portfolio-board.git
 cd helix-collective-dashboard
 npm ci
 cp .env.example .env
@@ -179,7 +179,7 @@ Private repositories are deliberately excluded from this release even when a tok
 
 The release scope is tracked in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md), run all four quality commands above, and describe any configuration or public API behavior changes.
 
-Use [GitHub Issues](https://github.com/Deathcharge/helix-collective-dashboard/issues) for reproducible non-sensitive bugs and feature proposals. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
+Use [GitHub Issues](https://github.com/Deathcharge/samsarix-portfolio-board/issues) for reproducible non-sensitive bugs and feature proposals. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
 
 ## License and ownership
 

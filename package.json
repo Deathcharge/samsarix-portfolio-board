@@ -9,13 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Deathcharge/helix-collective-dashboard.git"
+    "url": "git+https://github.com/Deathcharge/samsarix-portfolio-board.git"
   },
   "bugs": {
-    "url": "https://github.com/Deathcharge/helix-collective-dashboard/issues",
+    "url": "https://github.com/Deathcharge/samsarix-portfolio-board/issues",
     "email": "support@samsarix.com"
   },
-  "homepage": "https://github.com/Deathcharge/helix-collective-dashboard#readme",
+  "homepage": "https://github.com/Deathcharge/samsarix-portfolio-board#readme",
   "keywords": [
     "samsarix",
     "github",
