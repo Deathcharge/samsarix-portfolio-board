@@ -204,7 +204,7 @@ Private repositories are deliberately excluded from this release even when a tok
 
 ## Project status and contribution
 
-The completed first-release audit is recorded in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). The evidence and acceptance criteria for the portfolio-operations milestone are in [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md) and [ROADMAP.md](ROADMAP.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md), run all four quality commands above, and describe any configuration or public API behavior changes.
+The completed first-release audit is recorded in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). The portfolio-operations strategy is in [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md), the implementation path is in [ROADMAP.md](ROADMAP.md), and version 1.1 verification is recorded in [docs/RELEASE_1.1.md](docs/RELEASE_1.1.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md), run all four quality commands above, and describe any configuration or public API behavior changes.
 
 Use [GitHub Issues](https://github.com/Deathcharge/samsarix-portfolio-board/issues) for reproducible non-sensitive bugs and feature proposals. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
 
