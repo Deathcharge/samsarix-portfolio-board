@@ -28,6 +28,7 @@ function repository(overrides = {}) {
     html_url: 'https://github.com/octocat/active-repo',
     language: 'JavaScript',
     topics: ['portfolio'],
+    license: { spdx_id: 'Apache-2.0' },
     stargazers_count: 12,
     forks_count: 3,
     open_issues_count: 4,
@@ -91,8 +92,122 @@ test('GitHub client uses one unauthenticated list request and returns honest act
     archived: 1,
     stars: 26,
     forks: 9,
+    needsAttention: 0,
+    noKnownGaps: 3,
+    communityReady: 0,
+    failedChecks: 0,
   })
+  assert.equal(dashboard.accountType, 'user')
+  assert.equal(dashboard.communityProfiles.enabled, false)
+  assert.equal(dashboard.repositories[0].standards.status, 'baseline-ready')
   assert.equal(dashboard.rateLimit.remaining, 58)
+})
+
+test('GitHub client paginates organization repositories within the configured ceiling', async () => {
+  const captured = []
+  const client = createGitHubClient({
+    owner: 'octo-org',
+    accountType: 'organization',
+    maxRepositories: 150,
+    timeoutMs: 2000,
+    activityWindowDays: 90,
+    now: () => new Date('2026-07-28T12:00:00Z'),
+    fetchImpl: async (url) => {
+      captured.push(url)
+      const page = Number(url.searchParams.get('page'))
+      const count = page === 1 ? 100 : 50
+      return response({
+        body: Array.from({ length: count }, (_, index) =>
+          repository({
+            name: `repo-${page}-${index}`,
+            full_name: `octo-org/repo-${page}-${index}`,
+          }),
+        ),
+      })
+    },
+  })
+
+  const dashboard = await client.listRepositories()
+
+  assert.equal(captured.length, 2)
+  assert.equal(captured[0].pathname, '/orgs/octo-org/repos')
+  assert.equal(captured[0].searchParams.get('type'), 'public')
+  assert.equal(captured[1].searchParams.get('per_page'), '50')
+  assert.equal(dashboard.repositories.length, 150)
+  assert.equal(dashboard.repositoryLimitReached, true)
+})
+
+test('GitHub client enriches explainable standards and caches successful community profiles', async () => {
+  let listRequests = 0
+  let profileRequests = 0
+  const client = createGitHubClient({
+    owner: 'octocat',
+    token: 'token-value',
+    communityProfilesEnabled: true,
+    communityProfileTtlMs: 3600000,
+    timeoutMs: 2000,
+    activityWindowDays: 90,
+    now: () => new Date('2026-07-28T12:00:00Z'),
+    fetchImpl: async (url) => {
+      if (url.pathname.endsWith('/community/profile')) {
+        profileRequests += 1
+        return response({
+          body: {
+            health_percentage: 57,
+            files: { readme: { html_url: 'safe' } },
+          },
+        })
+      }
+      listRequests += 1
+      return response({ body: [repository()] })
+    },
+  })
+
+  const first = await client.listRepositories()
+  const second = await client.listRepositories()
+  const standards = first.repositories[0].standards
+
+  assert.equal(listRequests, 2)
+  assert.equal(profileRequests, 1)
+  assert.equal(first.communityProfiles.available, 1)
+  assert.equal(first.communityProfiles.unavailable, 0)
+  assert.equal(standards.communityHealthPercentage, 57)
+  assert.equal(standards.attentionCount, 4)
+  assert.equal(standards.status, 'needs-attention')
+  assert.deepEqual(
+    standards.checks.filter((check) => check.state === 'fail').map((check) => check.id),
+    ['contributing', 'codeOfConduct', 'issueTemplate', 'pullRequestTemplate'],
+  )
+  assert.equal(first.summary.needsAttention, 1)
+  assert.equal(first.summary.failedChecks, 4)
+  assert.deepEqual(second.repositories[0].standards, standards)
+})
+
+test('GitHub client keeps repositories usable when community enrichment fails', async () => {
+  const client = createGitHubClient({
+    owner: 'octocat',
+    token: 'token-value',
+    communityProfilesEnabled: true,
+    timeoutMs: 2000,
+    activityWindowDays: 90,
+    fetchImpl: async (url) =>
+      url.pathname.endsWith('/community/profile')
+        ? response({ status: 500 })
+        : response({ body: [repository()] }),
+  })
+
+  const dashboard = await client.listRepositories()
+
+  assert.equal(dashboard.repositories.length, 1)
+  assert.equal(dashboard.communityProfiles.available, 0)
+  assert.equal(dashboard.communityProfiles.unavailable, 1)
+  assert.equal(dashboard.repositories[0].standards.status, 'baseline-ready')
+  assert.equal(
+    dashboard.repositories[0].standards.checks.filter(
+      (check) => check.state === 'unavailable',
+    ).length,
+    5,
+  )
 })
 
 test('GitHub client keeps the token server-side and filters requested repositories', async () => {

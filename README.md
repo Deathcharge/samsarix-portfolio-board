@@ -2,7 +2,7 @@
 
 A focused, read-only operations dashboard for a maintainer's GitHub repository portfolio.
 
-Samsarix Portfolio Board shows which repositories under one GitHub user account are active, quiet, or archived, with search, filters, stars, forks, topics, language, and last-push dates. It uses GitHub as the source of truth, keeps no database, and does not depend on any other Samsarix or legacy Helix repository.
+Samsarix Portfolio Board shows which repositories under one GitHub user or organization account are active, quiet, or archived. Its API also derives transparent portfolio-standard checks from GitHub metadata and can add GitHub's community-profile evidence when a read-only token is configured. It uses GitHub as the source of truth, keeps no database, and does not depend on any other Samsarix or legacy Helix repository.
 
 > **Maturity:** the activity-board release is verified; a portfolio-operations milestone is in progress. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
 
@@ -47,9 +47,14 @@ The server reads `.env` automatically when that file exists. Environment variabl
 | --- | --- | --- |
 | `HOST` | `127.0.0.1` | Address the production server binds to. Use `0.0.0.0` only for an intended network deployment. |
 | `PORT` | `5000` | HTTP port from 1 through 65535. |
-| `GITHUB_OWNER` | `Deathcharge` | GitHub user account whose repositories are displayed. |
-| `GITHUB_REPOS` | all returned | Optional comma-separated repository-name filter, applied to the first 100 results. |
-| `GITHUB_TOKEN` | none | Optional token used only to raise the rate limit for public repository metadata. |
+| `GITHUB_OWNER` | `Deathcharge` | GitHub user or organization account whose public repositories are displayed. |
+| `GITHUB_ACCOUNT_TYPE` | `user` | Account endpoint to use: `user` or `organization`. |
+| `GITHUB_MAX_REPOSITORIES` | `100` | Pagination ceiling from 1 through 300 repositories. |
+| `GITHUB_REPOS` | all returned | Optional comma-separated repository-name filter, applied after bounded discovery. |
+| `GITHUB_TOKEN` | none | Optional read-only token used to raise the public-data rate limit and enable community-profile enrichment by default. |
+| `GITHUB_COMMUNITY_PROFILE` | token present | Enable GitHub README, contributing, conduct, and template checks. `true` requires a token. |
+| `GITHUB_COMMUNITY_PROFILE_TTL_SECONDS` | `3600` | Successful per-repository community-profile cache duration, from 900 through 86400 seconds. |
+| `GITHUB_COMMUNITY_CONCURRENCY` | `4` | Maximum simultaneous community-profile requests, from 1 through 10. |
 | `ACTIVITY_WINDOW_DAYS` | `90` | Number of days after a push during which a repository is labelled active. |
 | `CACHE_TTL_SECONDS` | `300` | Duration of the successful in-memory GitHub response cache. |
 | `STALE_MAX_AGE_SECONDS` | `86400` | Maximum age of a snapshot that may be served when GitHub is unavailable. |
@@ -59,7 +64,7 @@ All values are validated at startup. Invalid configuration stops the process wit
 
 ### Optional GitHub token
 
-Public evaluation is token-free. GitHub currently documents a primary limit of 60 unauthenticated REST requests per hour and 5,000 for ordinary authenticated requests. This application makes one list request when the cache expires, deduplicates concurrent refreshes, and serves a labelled stale snapshot after a temporary upstream failure.
+Public evaluation is token-free. GitHub currently documents a primary limit of 60 unauthenticated REST requests per hour and 5,000 for ordinary authenticated requests. Repository-list pages use the five-minute dashboard cache. The more expensive community-profile requests default off without a token and use a separate one-hour cache when enabled. Concurrent refreshes are deduplicated, enrichment concurrency is bounded, and a temporary enrichment failure becomes unavailable evidence rather than a fabricated pass or a missing repository.
 
 For a fine-grained personal access token, grant no write permissions and only the minimum repository access GitHub requires for the token. Never prefix or quote the value in `.env`:
 
@@ -120,7 +125,7 @@ The Node process serves both the API and the built React application. Place it b
 Useful endpoints:
 
 - `GET /api/health` — application liveness and in-memory cache state; it does not claim GitHub is healthy.
-- `GET /api/dashboard` — normalized repository activity snapshot, summary, cache state, and GitHub rate-limit metadata.
+- `GET /api/dashboard` — normalized repository activity and portfolio-standard snapshot, summary, enrichment coverage, cache state, repository ceiling, and GitHub rate-limit metadata.
 
 The process handles `SIGINT` and `SIGTERM`, stops accepting new work, and closes idle connections. It exits startup early when configuration is invalid.
 
@@ -133,13 +138,14 @@ Browser
           └─ Express API
               ├─ validated environment configuration
               ├─ in-memory TTL cache + concurrent-request deduplication
-              └─ one timeout-bounded GitHub REST list request
+              ├─ bounded, paginated GitHub repository-list requests
+              └─ optional long-cached community-profile requests
 ```
 
 Key files:
 
 - `server/config.js` — environment parsing and validation
-- `server/github-client.js` — fixed-destination GitHub API adapter and response normalization
+- `server/github-client.js` — fixed-destination GitHub adapter, pagination, standards, and community-profile cache
 - `server/dashboard-service.js` — fresh cache, in-flight request sharing, and stale-on-error behavior
 - `server/app.js` — API contract, security headers, production static files, and structured errors
 - `client/src/App.jsx` — loading, success, stale, empty, filtered-empty, and hard-failure UI
@@ -154,7 +160,7 @@ Key files:
 - Content Security Policy and common browser hardening headers are applied to all responses.
 - React renders repository metadata as text. Repository links are accepted only from `https://github.com/` or reconstructed safely.
 - Upstream response bodies and tokens are not exposed in public errors.
-- GitHub requests have an 8-second default timeout, successful responses are cached for five minutes, and only one refresh can be active per process.
+- GitHub requests have an 8-second default timeout, dashboard responses are cached for five minutes, successful community profiles are cached for one hour, and only one dashboard refresh can be active per process.
 - No analytics, cookies, user accounts, or durable user data are included.
 - In-memory cache state is lost on restart. Multiple application instances have independent caches and therefore multiply the GitHub request budget.
 
@@ -162,8 +168,10 @@ See [GitHub's REST API best practices](https://docs.github.com/en/rest/using-the
 
 ## Limitations
 
-- The current release targets a GitHub **user** account and the first 100 repositories ordered by recent push.
-- The application intentionally queries the public user-repository endpoint even when a token is configured; private repositories are never returned by this release.
+- The account type must be configured explicitly as `user` or `organization`; automatic account-type detection is not included.
+- Discovery stops at the configured ceiling of at most 300 repositories and reports when that ceiling is reached.
+- The application intentionally uses public repository endpoint modes even when a token is configured; private repositories are never returned by this release.
+- Community-profile evidence is unavailable without a token or when an individual profile request fails. The underlying repository remains visible.
 - `open_issues_count` is labelled “Open issues & PRs” because GitHub includes pull requests in that field.
 - Activity history and trend charts are not persisted.
 - There are no repository write actions, alerts, deployment controls, authentication layer, or multi-tenant isolation.
