@@ -19,7 +19,11 @@ async function withServer(app, callback) {
 }
 
 function config() {
-  return { clientDistDirectory: 'Z:\\missing-client-build' }
+  return {
+    appVersion: '1.1.0',
+    sourceRevision: 'abc1234',
+    clientDistDirectory: 'Z:\\missing-client-build',
+  }
 }
 
 function logger() {
@@ -42,6 +46,8 @@ test('API health is honest about app liveness and cache state', async () => {
 
     assert.equal(response.status, 200)
     assert.equal(body.service, 'samsarix-portfolio-board')
+    assert.equal(body.version, '1.1.0')
+    assert.equal(body.sourceRevision, 'abc1234')
     assert.equal(body.status, 'ok')
     assert.equal(body.data.cacheReady, false)
     assert.equal(response.headers.get('x-content-type-options'), 'nosniff')

@@ -1,0 +1,22 @@
+services:
+  portfolio-board:
+    build:
+      context: .
+      args:
+        SOURCE_REVISION: ${SOURCE_REVISION:-local}
+    image: samsarix/portfolio-board:1.1.0
+    init: true
+    restart: unless-stopped
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      HOST: 0.0.0.0
+      PORT: 5000
+    ports:
+      - 127.0.0.1:5000:5000

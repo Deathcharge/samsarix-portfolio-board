@@ -20,8 +20,13 @@ export function startServer({ env = process.env, logger = console } = {}) {
   const config = loadConfig(env)
   const githubClient = createGitHubClient({
     owner: config.githubOwner,
+    accountType: config.githubAccountType,
     token: config.githubToken,
     repositoryNames: config.githubRepositories,
+    maxRepositories: config.githubMaxRepositories,
+    communityProfilesEnabled: config.githubCommunityProfile,
+    communityProfileTtlMs: config.githubCommunityProfileTtlMs,
+    communityConcurrency: config.githubCommunityConcurrency,
     timeoutMs: config.githubTimeoutMs,
     activityWindowDays: config.activityWindowDays,
   })
