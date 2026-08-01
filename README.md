@@ -1,10 +1,10 @@
 # Samsarix Portfolio Board
 
-A focused, read-only activity dashboard for a maintainer's GitHub repository portfolio.
+A focused, read-only operations dashboard for a maintainer's GitHub repository portfolio.
 
 Samsarix Portfolio Board shows which repositories under one GitHub user account are active, quiet, or archived, with search, filters, stars, forks, topics, language, and last-push dates. It uses GitHub as the source of truth, keeps no database, and does not depend on any other Samsarix or legacy Helix repository.
 
-> **Maturity:** release candidate under local verification. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
+> **Maturity:** the activity-board release is verified; a portfolio-operations milestone is in progress. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
 
 ## Who it is for
 
@@ -28,7 +28,7 @@ Prerequisites:
 
 ```bash
 git clone https://github.com/Deathcharge/samsarix-portfolio-board.git
-cd helix-collective-dashboard
+cd samsarix-portfolio-board
 npm ci
 cp .env.example .env
 npm run build
@@ -177,7 +177,7 @@ Private repositories are deliberately excluded from this release even when a tok
 
 ## Project status and contribution
 
-The release scope is tracked in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md), run all four quality commands above, and describe any configuration or public API behavior changes.
+The completed first-release audit is recorded in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). The evidence and acceptance criteria for the portfolio-operations milestone are in [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md) and [ROADMAP.md](ROADMAP.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md), run all four quality commands above, and describe any configuration or public API behavior changes.
 
 Use [GitHub Issues](https://github.com/Deathcharge/samsarix-portfolio-board/issues) for reproducible non-sensitive bugs and feature proposals. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
 

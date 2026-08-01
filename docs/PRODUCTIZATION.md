@@ -1,6 +1,8 @@
 # Productization record
 
-Last updated: 2026-07-28
+Last updated: 2026-08-01
+
+> This record describes the completed first productization milestone. Current competitive research, real-world use cases, and acceptance criteria are maintained in [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md).
 
 ## Current repository assessment
 
