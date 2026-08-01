@@ -38,6 +38,8 @@ export function createApp({ config, dashboardService, logger = console }) {
     response.set('Cache-Control', 'no-store').json({
       status: 'ok',
       service: 'samsarix-portfolio-board',
+      version: config.appVersion,
+      sourceRevision: config.sourceRevision,
       timestamp: new Date().toISOString(),
       data: dashboardService.getStatus(),
     })

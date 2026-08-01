@@ -4,7 +4,7 @@ A focused, read-only operations dashboard for a maintainer's GitHub repository p
 
 Samsarix Portfolio Board shows which repositories under one GitHub user or organization account are active, quiet, or archived. Its API also derives transparent portfolio-standard checks from GitHub metadata and can add GitHub's community-profile evidence when a read-only token is configured. It uses GitHub as the source of truth, keeps no database, and does not depend on any other Samsarix or legacy Helix repository.
 
-> **Maturity:** the activity-board release is verified; a portfolio-operations milestone is in progress. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
+> **Maturity:** version 1.1 is a locally verified release candidate. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
 
 ## Who it is for
 
@@ -122,9 +122,27 @@ npm start
 
 The Node process serves both the API and the built React application. Place it behind your platform's TLS termination or reverse proxy for a public deployment. The repository does not create cloud resources, domains, certificates, or production credentials.
 
+### Container run
+
+The included multi-stage image builds the client, prunes development dependencies, runs the application as the unprivileged `node` user, and includes a health check. Compose additionally drops Linux capabilities, prevents privilege escalation, uses a read-only filesystem, and binds the published port to loopback by default.
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Set `SOURCE_REVISION` before building when you want the health response to identify an exact source revision:
+
+```bash
+SOURCE_REVISION=$(git rev-parse HEAD) docker compose build
+docker compose up
+```
+
+On PowerShell, set `$env:SOURCE_REVISION = git rev-parse HEAD` before `docker compose build`. The container definition is covered by CI; a local Docker engine is not required for source-based installation.
+
 Useful endpoints:
 
-- `GET /api/health` — application liveness and in-memory cache state; it does not claim GitHub is healthy.
+- `GET /api/health` — application version, optional source revision, liveness, and in-memory cache state; it does not claim GitHub is healthy.
 - `GET /api/dashboard` — normalized repository activity and portfolio-standard snapshot, summary, enrichment coverage, cache state, repository ceiling, and GitHub rate-limit metadata.
 
 The process handles `SIGINT` and `SIGTERM`, stops accepting new work, and closes idle connections. It exits startup early when configuration is invalid.
@@ -163,6 +181,7 @@ Key files:
 - GitHub requests have an 8-second default timeout, dashboard responses are cached for five minutes, successful community profiles are cached for one hour, and only one dashboard refresh can be active per process.
 - No analytics, cookies, user accounts, or durable user data are included.
 - In-memory cache state is lost on restart. Multiple application instances have independent caches and therefore multiply the GitHub request budget.
+- The supplied Compose service binds to loopback. A public deployment still needs deliberate TLS, proxy, firewall, and access-control decisions.
 
 See [GitHub's REST API best practices](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api) and [rate-limit documentation](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) for current platform behavior.
 

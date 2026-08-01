@@ -13,21 +13,21 @@ GitHub remains the source of truth. Checks must be explainable, read-only, and d
 
 See [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md) for the research, use cases, and acceptance criteria behind this direction.
 
-## Milestone 1 — Portfolio operations
+## Milestone 1 — Portfolio operations (implemented in 1.1)
 
-- Support GitHub user and organization accounts with bounded pagination.
-- Add transparent repository standards and a needs-attention queue.
-- Optionally enrich repositories with GitHub community-profile metrics when an operator supplies a token.
-- Show the exact checks that pass, fail, or are unavailable; avoid opaque weighted scores.
-- Add URL-backed filters and portable CSV/JSON reports.
-- Preserve activity browsing, stale-data recovery, and the no-write product boundary.
+- [x] Support GitHub user and organization accounts with bounded pagination.
+- [x] Add transparent repository standards and a needs-attention queue.
+- [x] Optionally enrich repositories with GitHub community-profile metrics when an operator supplies a token.
+- [x] Show the exact checks that pass, fail, or are unavailable; avoid opaque weighted scores.
+- [x] Add URL-backed filters and portable CSV/JSON reports.
+- [x] Preserve activity browsing, stale-data recovery, and the no-write product boundary.
 
-## Milestone 2 — Self-hosting and operations
+## Milestone 2 — Self-hosting and operations (implemented in 1.1)
 
-- Ship a non-root container image definition and Compose example.
-- Add a deployment health check and documented resource/network boundaries.
-- Record version and source-revision information in the runtime contract.
-- Add browser-level regression coverage for the primary maintenance journey.
+- [x] Ship a non-root container image definition and Compose example.
+- [x] Add a deployment health check and documented resource/network boundaries.
+- [x] Record version and source-revision information in the runtime contract.
+- [x] Verify the primary maintenance journey in a real browser at desktop and mobile sizes.
 
 ## Milestone 3 — Validated expansion
 

@@ -6,6 +6,8 @@ test('loadConfig provides safe local defaults', () => {
   const config = loadConfig({})
 
   assert.equal(config.host, '127.0.0.1')
+  assert.equal(config.appVersion, '1.1.0')
+  assert.equal(config.sourceRevision, null)
   assert.equal(config.port, 5000)
   assert.equal(config.githubOwner, 'Deathcharge')
   assert.equal(config.githubAccountType, 'user')
@@ -27,6 +29,7 @@ test('loadConfig trims and validates operator settings', () => {
     GITHUB_REPOS: 'Hello-World, Spoon-Knife,Hello-World',
     GITHUB_COMMUNITY_PROFILE_TTL_SECONDS: '7200',
     GITHUB_COMMUNITY_CONCURRENCY: '6',
+    SOURCE_REVISION: 'abc1234',
     ACTIVITY_WINDOW_DAYS: '30',
     CACHE_TTL_SECONDS: '60',
     STALE_MAX_AGE_SECONDS: '600',
@@ -40,6 +43,7 @@ test('loadConfig trims and validates operator settings', () => {
   assert.equal(config.githubCommunityProfile, true)
   assert.equal(config.githubCommunityProfileTtlMs, 7200000)
   assert.equal(config.githubCommunityConcurrency, 6)
+  assert.equal(config.sourceRevision, 'abc1234')
   assert.deepEqual(config.githubRepositories, ['Hello-World', 'Spoon-Knife'])
   assert.equal(config.activityWindowDays, 30)
   assert.equal(config.cacheTtlMs, 60000)
@@ -54,4 +58,5 @@ test('loadConfig rejects invalid external-input boundaries', () => {
   assert.throws(() => loadConfig({ GITHUB_MAX_REPOSITORIES: '301' }), ConfigError)
   assert.throws(() => loadConfig({ GITHUB_COMMUNITY_PROFILE: 'sometimes' }), ConfigError)
   assert.throws(() => loadConfig({ GITHUB_COMMUNITY_PROFILE: 'true' }), ConfigError)
+  assert.throws(() => loadConfig({ SOURCE_REVISION: 'not a revision' }), ConfigError)
 })

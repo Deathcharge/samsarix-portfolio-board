@@ -1,7 +1,11 @@
+import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const moduleDirectory = dirname(fileURLToPath(import.meta.url))
+const packageMetadata = JSON.parse(
+  readFileSync(join(moduleDirectory, '..', 'package.json'), { encoding: 'utf8' }),
+)
 const ownerPattern = /^(?!-)[A-Za-z0-9-]{1,39}(?<!-)$/
 const repositoryPattern = /^[A-Za-z0-9._-]{1,100}$/
 
@@ -89,7 +93,14 @@ export function loadConfig(env = process.env) {
     )
   }
 
+  const sourceRevision = env.SOURCE_REVISION?.trim() || null
+  if (sourceRevision && !/^[A-Za-z0-9._/-]{1,100}$/.test(sourceRevision)) {
+    throw new ConfigError('SOURCE_REVISION contains unsupported characters or is longer than 100 characters.')
+  }
+
   return Object.freeze({
+    appVersion: packageMetadata.version,
+    sourceRevision,
     host,
     port: integerSetting(env, 'PORT', 5000, { minimum: 1, maximum: 65535 }),
     githubOwner: owner,
