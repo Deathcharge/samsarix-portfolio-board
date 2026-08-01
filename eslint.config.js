@@ -5,6 +5,7 @@ const nodeGlobals = {
   AbortSignal: 'readonly',
   Buffer: 'readonly',
   URL: 'readonly',
+  URLSearchParams: 'readonly',
   clearTimeout: 'readonly',
   console: 'readonly',
   fetch: 'readonly',
@@ -15,7 +16,10 @@ const nodeGlobals = {
 
 const browserGlobals = {
   AbortController: 'readonly',
+  Blob: 'readonly',
   Intl: 'readonly',
+  URL: 'readonly',
+  URLSearchParams: 'readonly',
   document: 'readonly',
   fetch: 'readonly',
   navigator: 'readonly',
