@@ -55,7 +55,7 @@ A formal Codex Security diff-scan was attempted for the `origin/main..HEAD` rang
 
 The 2026-08-11 publication pass added the changelog, citation metadata, conduct policy, support policy, supported-version table, and public repository badges. A read-only scan of all 17 reachable commit states found no GitHub, OpenAI, AWS, Slack, or Stripe credential signatures; no private-key headers or credentialed URLs; and no committed secret-bearing environment file. The only environment file in reachable history is the intentionally blank `.env.example` template.
 
-Two development-tool advisories disclosed after the original verification were resolved by updating `brace-expansion` to 5.0.9 and `nanoid` to 3.3.18 in the lockfile. A clean `npm ci` audited 222 packages with zero known vulnerabilities, and `npm run check` again passed lint, all 21 tests, the production build, and the production dependency audit. GitHub Actions status for the public release remains available from the README badge and the repository's Actions page.
+Two development-tool advisories disclosed after the original verification were resolved by updating `brace-expansion` to 5.0.9 and `nanoid` to 3.3.18 in the lockfile. The lock was regenerated with a current npm release so its optional peer graph installs consistently on Linux and Windows. A clean `npm ci` audited 221 packages with zero known vulnerabilities, and `npm run check` again passed lint, all 21 tests, the production build, and the production dependency audit. GitHub Actions status for the public release remains available from the README badge and the repository's Actions page.
 
 ## Remaining product boundaries
 
