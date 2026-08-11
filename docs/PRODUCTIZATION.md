@@ -197,13 +197,13 @@ Final verification used Node `v24.12.0` and npm `11.6.2` on Windows.
 | Adversarial review | Passed configuration, secret-flow, request-budget, remote-content, URL-safety, error-leakage, and dependency checks with no reportable security finding. |
 | `git diff --check` | Passed with no whitespace errors. |
 
-One optional dev-only WASI support package is reported as extraneous by npm on this Windows install. It is not a direct or production dependency, does not affect the clean audit, build, tests, or runtime, and is recorded as an npm optional-dependency graph quirk rather than a release blocker.
+The publication lockfile installs consistently with the npm major versions supplied by the supported Node.js lines. Optional cross-platform packages remain lockfile-managed rather than depending on the operating system that generated the lock.
 
 ## Release disposition
 
-The implementation is a **release candidate**: the documented install, build, start, primary journey, tests, CI, dependency audit, production smoke test, browser validation, security review, branding, and release licensing all pass or are resolved, and no locally actionable P0 or P1 issue remains.
+Version 1.1.0 is the first **public, supported release**: the documented install, build, start, primary journey, tests, CI, dependency audit, container build, production smoke test, browser validation, security review, branding, and release licensing pass or are resolved, and no actionable P0 or P1 issue remains.
 
-The source repository remains private until the owner deliberately changes its GitHub visibility. Hosting, a public domain, TLS, deployment credentials, a repository rename, and a first version tag are distribution decisions rather than application defects. The Apache license and Samsarix ownership metadata remove the prior license-identity blocker, but counsel should confirm chain of title and trademark strategy before a high-stakes commercial launch.
+The source repository is public under Apache License 2.0 with Samsarix LLC attribution, citation metadata, support guidance, and a separate trademark policy. A hosted demo, production TLS, deployment credentials, and operator access controls remain deployment decisions rather than source-release defects. Counsel should still confirm chain of title and trademark strategy before a high-stakes commercial launch.
 
 ## Deferred and owner-blocked work
 

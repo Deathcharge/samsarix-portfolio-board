@@ -12,6 +12,6 @@ Do not post credentials, private repository names, customer information, or susp
 
 ## Support boundary
 
-The supported project is the latest minor release running on a supported Node.js version. Samsarix LLC does not operate user deployments and cannot administer third-party GitHub accounts, DNS, TLS, proxies, firewalls, containers, or hosting platforms on a user's behalf. Best-effort community support does not include a guaranteed response or resolution time.
+The supported project is the latest minor release running on Node.js 22.13.0 or newer, matching the requirement in `package.json`. Samsarix LLC does not operate user deployments and cannot administer third-party GitHub accounts, DNS, TLS, proxies, firewalls, containers, or hosting platforms on a user's behalf. Best-effort community support does not include a guaranteed response or resolution time.
 
 Commercial or licensing inquiries may be sent to [contact@samsarix.com](mailto:contact@samsarix.com).
