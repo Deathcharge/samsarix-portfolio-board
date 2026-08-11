@@ -208,5 +208,5 @@ The source repository remains private until the owner deliberately changes its G
 ## Deferred and owner-blocked work
 
 - **Owner/credentials:** Supply a least-privilege GitHub token only if higher public-data rate limits are needed. Public evaluation remains token-optional; private repositories are deliberately not queried.
-- **Owner/repository:** Decide whether to rename the GitHub repository from its legacy `helix-collective-dashboard` slug to `samsarix-portfolio-board` and whether to make it public. The application does not depend on that rename.
-- **Owner/infrastructure:** Production domain, hosting account, TLS, deployment credentials, first release tag, and any public demo are intentionally not created or modified.
+- **Repository:** The GitHub repository is named `samsarix-portfolio-board`; public release metadata and community health files are maintained with the source.
+- **Infrastructure:** A hosted demo, production TLS termination, deployment credentials, and operator access controls remain separate deployment decisions. The source release does not require them.

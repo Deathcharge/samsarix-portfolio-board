@@ -1,10 +1,14 @@
 # Samsarix Portfolio Board
 
+[![CI](https://github.com/Deathcharge/samsarix-portfolio-board/actions/workflows/ci.yml/badge.svg)](https://github.com/Deathcharge/samsarix-portfolio-board/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Deathcharge/samsarix-portfolio-board?display_name=tag)](https://github.com/Deathcharge/samsarix-portfolio-board/releases/latest)
+[![License](https://img.shields.io/github/license/Deathcharge/samsarix-portfolio-board)](LICENSE)
+
 A focused, read-only operations dashboard for a maintainer's GitHub repository portfolio.
 
 Samsarix Portfolio Board shows which repositories under one GitHub user or organization account are active, quiet, or archived. Its API also derives transparent portfolio-standard checks from GitHub metadata and can add GitHub's community-profile evidence when a read-only token is configured. It uses GitHub as the source of truth, keeps no database, and does not depend on any other Samsarix or legacy Helix repository.
 
-> **Maturity:** version 1.1 is a locally verified release candidate. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
+> **Maturity:** version 1.1 is the first public, supported release. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
 
 ## Who it is for
 
@@ -204,9 +208,9 @@ Private repositories are deliberately excluded from this release even when a tok
 
 ## Project status and contribution
 
-The completed first-release audit is recorded in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). The portfolio-operations strategy is in [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md), the implementation path is in [ROADMAP.md](ROADMAP.md), and version 1.1 verification is recorded in [docs/RELEASE_1.1.md](docs/RELEASE_1.1.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md), run all four quality commands above, and describe any configuration or public API behavior changes.
+The completed first-release audit is recorded in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). The portfolio-operations strategy is in [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md), the implementation path is in [ROADMAP.md](ROADMAP.md), version 1.1 verification is recorded in [docs/RELEASE_1.1.md](docs/RELEASE_1.1.md), and release notes are maintained in [CHANGELOG.md](CHANGELOG.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), run all four quality commands above, and describe any configuration or public API behavior changes.
 
-Use [GitHub Issues](https://github.com/Deathcharge/samsarix-portfolio-board/issues) for reproducible non-sensitive bugs and feature proposals. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
+Use [GitHub Issues](https://github.com/Deathcharge/samsarix-portfolio-board/issues) for reproducible non-sensitive bugs and feature proposals. [SUPPORT.md](SUPPORT.md) explains the support boundary. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
 
 ## License and ownership
 
