@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
 import { createApp } from '../server/app.js'
 import { GitHubError } from '../server/github-client.js'
@@ -18,11 +21,15 @@ async function withServer(app, callback) {
   }
 }
 
-function config() {
+function config(overrides = {}) {
   return {
     appVersion: '1.1.0',
     sourceRevision: 'abc1234',
     clientDistDirectory: 'Z:\\missing-client-build',
+    trustProxyHops: 0,
+    requestRateLimitMax: 300,
+    requestRateLimitWindowMs: 60000,
+    ...overrides,
   }
 }
 
@@ -118,4 +125,37 @@ test('unknown API routes stay JSON and a missing client build is actionable', as
     assert.equal(missingClient.status, 503)
     assert.match(await missingClient.text(), /npm run build/)
   })
+})
+
+test('request limiter blocks repeated SPA file access and preserves normal responses', async () => {
+  const clientDirectory = mkdtempSync(join(tmpdir(), 'samsarix-client-'))
+  writeFileSync(join(clientDirectory, 'index.html'), '<!doctype html><title>Samsarix</title>')
+
+  try {
+    const app = createApp({
+      config: config({
+        clientDistDirectory: clientDirectory,
+        requestRateLimitMax: 10,
+      }),
+      logger: logger(),
+      dashboardService: { getStatus: () => ({}), getDashboard: async () => ({}) },
+    })
+
+    await withServer(app, async (baseUrl) => {
+      for (let index = 0; index < 10; index += 1) {
+        const response = await fetch(`${baseUrl}/route-${index}`)
+        assert.equal(response.status, 200)
+        assert.match(await response.text(), /Samsarix/)
+      }
+
+      const blocked = await fetch(`${baseUrl}/blocked`)
+      assert.equal(blocked.status, 429)
+      assert.match(await blocked.text(), /Too many requests/)
+      assert.equal(blocked.headers.get('cache-control'), 'no-store')
+      assert.ok(blocked.headers.get('ratelimit'))
+      assert.ok(blocked.headers.get('retry-after'))
+    })
+  } finally {
+    rmSync(clientDirectory, { recursive: true, force: true })
+  }
 })

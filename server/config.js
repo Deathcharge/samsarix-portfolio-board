@@ -103,6 +103,16 @@ export function loadConfig(env = process.env) {
     sourceRevision,
     host,
     port: integerSetting(env, 'PORT', 5000, { minimum: 1, maximum: 65535 }),
+    trustProxyHops: integerSetting(env, 'TRUST_PROXY_HOPS', 0, { minimum: 0, maximum: 10 }),
+    requestRateLimitMax: integerSetting(env, 'REQUEST_RATE_LIMIT_MAX', 300, {
+      minimum: 10,
+      maximum: 10000,
+    }),
+    requestRateLimitWindowMs:
+      integerSetting(env, 'REQUEST_RATE_LIMIT_WINDOW_SECONDS', 60, {
+        minimum: 10,
+        maximum: 3600,
+      }) * 1000,
     githubOwner: owner,
     githubAccountType: enumSetting(env, 'GITHUB_ACCOUNT_TYPE', 'user', ['user', 'organization']),
     githubToken,

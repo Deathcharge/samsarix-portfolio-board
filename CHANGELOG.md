@@ -18,6 +18,7 @@ First public release.
 
 - Kept GitHub credentials server-side and optional, restricted discovery to public repository endpoint modes, and fixed outbound requests to GitHub's API origin.
 - Added configuration bounds, timeouts, request deduplication, safe link handling, security headers, structured errors, and CSV formula neutralization.
+- Added a configurable per-IP request limit before API and filesystem-backed routes, with conservative proxy trust by default.
 - Updated transitive development dependencies to resolve the advisories known at release time.
 
 ### Documentation

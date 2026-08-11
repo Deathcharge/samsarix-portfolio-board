@@ -9,6 +9,9 @@ test('loadConfig provides safe local defaults', () => {
   assert.equal(config.appVersion, '1.1.0')
   assert.equal(config.sourceRevision, null)
   assert.equal(config.port, 5000)
+  assert.equal(config.trustProxyHops, 0)
+  assert.equal(config.requestRateLimitMax, 300)
+  assert.equal(config.requestRateLimitWindowMs, 60000)
   assert.equal(config.githubOwner, 'Deathcharge')
   assert.equal(config.githubAccountType, 'user')
   assert.equal(config.githubToken, null)
@@ -22,6 +25,9 @@ test('loadConfig trims and validates operator settings', () => {
   const config = loadConfig({
     HOST: '0.0.0.0',
     PORT: '8080',
+    TRUST_PROXY_HOPS: '1',
+    REQUEST_RATE_LIMIT_MAX: '600',
+    REQUEST_RATE_LIMIT_WINDOW_SECONDS: '120',
     GITHUB_OWNER: 'octocat',
     GITHUB_ACCOUNT_TYPE: 'organization',
     GITHUB_TOKEN: '  secret  ',
@@ -37,6 +43,9 @@ test('loadConfig trims and validates operator settings', () => {
   })
 
   assert.equal(config.port, 8080)
+  assert.equal(config.trustProxyHops, 1)
+  assert.equal(config.requestRateLimitMax, 600)
+  assert.equal(config.requestRateLimitWindowMs, 120000)
   assert.equal(config.githubToken, 'secret')
   assert.equal(config.githubAccountType, 'organization')
   assert.equal(config.githubMaxRepositories, 200)
@@ -52,6 +61,9 @@ test('loadConfig trims and validates operator settings', () => {
 test('loadConfig rejects invalid external-input boundaries', () => {
   assert.throws(() => loadConfig({ GITHUB_OWNER: '../secret' }), ConfigError)
   assert.throws(() => loadConfig({ PORT: '70000' }), ConfigError)
+  assert.throws(() => loadConfig({ TRUST_PROXY_HOPS: '11' }), ConfigError)
+  assert.throws(() => loadConfig({ REQUEST_RATE_LIMIT_MAX: '9' }), ConfigError)
+  assert.throws(() => loadConfig({ REQUEST_RATE_LIMIT_WINDOW_SECONDS: '9' }), ConfigError)
   assert.throws(() => loadConfig({ CACHE_TTL_SECONDS: '59' }), ConfigError)
   assert.throws(() => loadConfig({ GITHUB_REPOS: 'valid,not/a/repository' }), ConfigError)
   assert.throws(() => loadConfig({ GITHUB_ACCOUNT_TYPE: 'enterprise' }), ConfigError)
