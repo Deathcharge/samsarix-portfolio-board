@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If this software supports your work, please cite it using this metadata."
+title: "Samsarix Portfolio Board"
+type: software
+authors:
+  - name: "Samsarix LLC"
+    email: "contact@samsarix.com"
+    website: "https://www.samsarix.com"
+contact:
+  - name: "Samsarix LLC"
+    email: "contact@samsarix.com"
+    website: "https://www.samsarix.com"
+version: 1.1.0
+date-released: 2026-08-11
+repository-code: "https://github.com/Deathcharge/samsarix-portfolio-board"
+url: "https://www.samsarix.com"
+license: Apache-2.0
+abstract: "A read-only GitHub portfolio operations dashboard with explainable repository standards."
+keywords:
+  - github
+  - portfolio-management
+  - repository-standards
+  - developer-tools

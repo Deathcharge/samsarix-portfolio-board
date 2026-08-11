@@ -8,7 +8,12 @@ Please do not open a public GitHub issue for an unpatched vulnerability. Samsari
 
 ## Supported versions
 
-Until the first tagged release, only the latest commit on the default branch is supported. After releases begin, this policy will be updated with a supported-version table.
+Security fixes are provided for the latest minor release only.
+
+| Version | Supported |
+| --- | --- |
+| 1.1.x | Yes |
+| Earlier versions | No |
 
 ## Scope reminders
 

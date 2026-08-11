@@ -1,10 +1,14 @@
 # Samsarix Portfolio Board
 
+[![CI](https://github.com/Deathcharge/samsarix-portfolio-board/actions/workflows/ci.yml/badge.svg)](https://github.com/Deathcharge/samsarix-portfolio-board/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Deathcharge/samsarix-portfolio-board?display_name=tag)](https://github.com/Deathcharge/samsarix-portfolio-board/releases/latest)
+[![License](https://img.shields.io/github/license/Deathcharge/samsarix-portfolio-board)](LICENSE)
+
 A focused, read-only operations dashboard for a maintainer's GitHub repository portfolio.
 
 Samsarix Portfolio Board shows which repositories under one GitHub user or organization account are active, quiet, or archived. Its API also derives transparent portfolio-standard checks from GitHub metadata and can add GitHub's community-profile evidence when a read-only token is configured. It uses GitHub as the source of truth, keeps no database, and does not depend on any other Samsarix or legacy Helix repository.
 
-> **Maturity:** version 1.1 is a locally verified release candidate. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
+> **Maturity:** version 1.1 is the first public, supported release. The product is intentionally smaller than the historical control-plane concept in `dashboard_spec.md`.
 
 ## Who it is for
 
@@ -47,6 +51,9 @@ The server reads `.env` automatically when that file exists. Environment variabl
 | --- | --- | --- |
 | `HOST` | `127.0.0.1` | Address the production server binds to. Use `0.0.0.0` only for an intended network deployment. |
 | `PORT` | `5000` | HTTP port from 1 through 65535. |
+| `TRUST_PROXY_HOPS` | `0` | Exact number of trusted reverse-proxy hops used to resolve client IPs, from 0 through 10. Leave at 0 when the app is directly reachable. |
+| `REQUEST_RATE_LIMIT_MAX` | `300` | Maximum requests per client IP and per process during one rate-limit window, from 10 through 10,000. |
+| `REQUEST_RATE_LIMIT_WINDOW_SECONDS` | `60` | In-memory rate-limit window from 10 through 3,600 seconds. |
 | `GITHUB_OWNER` | `Deathcharge` | GitHub user or organization account whose public repositories are displayed. |
 | `GITHUB_ACCOUNT_TYPE` | `user` | Account endpoint to use: `user` or `organization`. |
 | `GITHUB_MAX_REPOSITORIES` | `100` | Pagination ceiling from 1 through 300 repositories. |
@@ -176,11 +183,13 @@ Key files:
 - Operator-controlled account and repository names are validated before use.
 - The server sends no cross-origin access header and exposes read-only endpoints only.
 - Content Security Policy and common browser hardening headers are applied to all responses.
+- All routes, including static and SPA fallback file access, have a bounded per-IP request rate with standard rate-limit headers.
 - React renders repository metadata as text. Repository links are accepted only from `https://github.com/` or reconstructed safely.
 - Upstream response bodies and tokens are not exposed in public errors.
 - GitHub requests have an 8-second default timeout, dashboard responses are cached for five minutes, successful community profiles are cached for one hour, and only one dashboard refresh can be active per process.
 - No analytics, cookies, user accounts, or durable user data are included.
 - In-memory cache state is lost on restart. Multiple application instances have independent caches and therefore multiply the GitHub request budget.
+- The request limiter is also per process. Configure `TRUST_PROXY_HOPS` to the exact trusted topology when deploying behind a reverse proxy; an incorrect nonzero value can allow client-address spoofing.
 - The supplied Compose service binds to loopback. A public deployment still needs deliberate TLS, proxy, firewall, and access-control decisions.
 
 See [GitHub's REST API best practices](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api) and [rate-limit documentation](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) for current platform behavior.
@@ -204,9 +213,9 @@ Private repositories are deliberately excluded from this release even when a tok
 
 ## Project status and contribution
 
-The completed first-release audit is recorded in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). The portfolio-operations strategy is in [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md), the implementation path is in [ROADMAP.md](ROADMAP.md), and version 1.1 verification is recorded in [docs/RELEASE_1.1.md](docs/RELEASE_1.1.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md), run all four quality commands above, and describe any configuration or public API behavior changes.
+The completed first-release audit is recorded in [docs/PRODUCTIZATION.md](docs/PRODUCTIZATION.md). The portfolio-operations strategy is in [docs/PRODUCT_STRATEGY.md](docs/PRODUCT_STRATEGY.md), the implementation path is in [ROADMAP.md](ROADMAP.md), version 1.1 verification is recorded in [docs/RELEASE_1.1.md](docs/RELEASE_1.1.md), and release notes are maintained in [CHANGELOG.md](CHANGELOG.md). Before opening a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), run all four quality commands above, and describe any configuration or public API behavior changes.
 
-Use [GitHub Issues](https://github.com/Deathcharge/samsarix-portfolio-board/issues) for reproducible non-sensitive bugs and feature proposals. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
+Use [GitHub Issues](https://github.com/Deathcharge/samsarix-portfolio-board/issues) for reproducible non-sensitive bugs and feature proposals. [SUPPORT.md](SUPPORT.md) explains the support boundary. Report vulnerabilities privately according to [SECURITY.md](SECURITY.md); do not post tokens, private repository names, or security-sensitive details in a public issue.
 
 ## License and ownership
 

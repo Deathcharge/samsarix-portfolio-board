@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import express from 'express'
+import { rateLimit } from 'express-rate-limit'
 import { GitHubError } from './github-client.js'
 
 function setSecurityHeaders(_request, response, next) {
@@ -32,7 +33,32 @@ export function createApp({ config, dashboardService, logger = console }) {
   const clientBuildAvailable = existsSync(clientIndex)
 
   app.disable('x-powered-by')
+  if (config.trustProxyHops > 0) {
+    app.set('trust proxy', config.trustProxyHops)
+  }
   app.use(setSecurityHeaders)
+  app.use(
+    rateLimit({
+      windowMs: config.requestRateLimitWindowMs,
+      limit: config.requestRateLimitMax,
+      standardHeaders: 'draft-8',
+      legacyHeaders: false,
+      handler(request, response) {
+        response.status(429).set('Cache-Control', 'no-store')
+        if (request.path.startsWith('/api/')) {
+          response.json({
+            error: {
+              code: 'RATE_LIMITED',
+              message: 'Too many requests. Try again after the rate-limit window.',
+            },
+          })
+          return
+        }
+
+        response.type('text/plain').send('Too many requests. Try again later.')
+      },
+    }),
+  )
 
   app.get('/api/health', (_request, response) => {
     response.set('Cache-Control', 'no-store').json({
